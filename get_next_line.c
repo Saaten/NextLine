@@ -26,6 +26,8 @@ char	*read_to_somewhere(int fd, char *place)
 		if (bytes < 0)
 		{
 			free(buffer);
+			free(place);
+			place = NULL;
 			return (NULL);
 		}
 		buffer[bytes] = '\0';
@@ -79,7 +81,37 @@ char	*get_next_line(int fd)
 	place = read_to_somewhere(fd, place);
 	if (!place)
 		return (NULL);
+	if (place[0] == '\0')
+	{
+		free(place);
+		place = NULL;
+		return (NULL);
+	}
 	line = ft_get_line(place);
+	if (!line)
+		return (free (place), NULL);
 	place = clean_place(place);
 	return (line);
+}
+
+size_t	ft_strlcat(char *dst, char *src, size_t size)
+{
+	size_t	src_len;
+	size_t	dst_len;
+	size_t	i;
+
+	src_len = ft_strlen(src);
+	dst_len = ft_strlen(dst);
+	i = 0;
+	if (size == 0)
+		return (src_len + dst_len);
+	if (dst_len >= size)
+		return (src_len + size);
+	while (src[i] && i + dst_len < size - 1)
+	{
+		dst[i + dst_len] = src[i];
+		i++;
+	}
+	dst[i + dst_len] = '\0';
+	return (dst_len + src_len);
 }
